@@ -1,0 +1,204 @@
+openapi: "3.0.2"
+info:
+  title: Notável app REST API
+  version: "0.1"
+servers:
+  - url: https://api.server.test/v1
+
+components:
+  schemas:
+    Project:
+      type: object
+      properties:
+        id:
+          type: string
+        user_id:
+          type: string
+        name:
+          type: string
+        parent_project_id:
+          type: string
+    BulletPoint:
+      type: object
+      required:
+        - type
+      properties:
+        id:
+          type: string
+        type:
+          type: string
+        user_id:
+          type: string
+        content:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+    Task:
+      allOf:
+        - $ref: "#/components/schemas/BulletPoint"
+        - type: object
+          required:
+            - type
+          properties:
+            due_at:
+              type: string
+              format: date-time
+    Note:
+      type: object
+      properties:
+        id:
+          type: string
+        user_id:
+          type: string
+        title:
+          type: string
+          example: Creating Notes
+        created_at:
+          type: string
+          format: date-time
+        project:
+          type: string
+          example: Personal
+        tags:
+          type: array
+          items:
+            type: string
+          example: ["api", "swagger"]
+        is_deleted:
+          type: boolean
+        content:
+          type: array
+          items:
+            anyOf:
+              - $ref: "#/components/schemas/BulletPoint"
+              - $ref: "#/components/schemas/Task"
+            discriminator:
+              propertyName: type
+paths:
+  /projects:
+    get:
+      tags:
+        - Projects
+      summary: Get all projects using query parameters
+      parameters:
+        - in: query
+          name: user_id
+          schema:
+            type: string
+            description: Id of user.
+      operationId: getProjects
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Project"
+
+    post:
+      tags:
+        - Projects
+      summary: Create new project
+      description:
+      responses:
+        "200":
+          description: OK
+
+  /notes:
+    post:
+      tags:
+        - Notes
+      summary: Create new note
+      operationId: createNote
+      requestBody:
+        description: Note object to create.
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Note"
+      responses:
+        "201":
+          description: "successful operation"
+
+    put:
+      tags:
+        - Notes
+      summary: Update existing note
+      operationId: updateNote
+      requestBody:
+        description: Note object to be updated.
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Note"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Note"
+    get:
+      tags:
+        - Notes
+      summary: Get all notes using query parameters.
+      parameters:
+        - in: query
+          name: user
+          schema:
+            type: string
+          description: Id of the user.
+        - in: query
+          name: project
+          schema:
+            type: string
+          description: Project name to filter by
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Note"
+  /notes/{note-id}:
+    get:
+      tags:
+        - Notes
+      summary: Get note by id
+      parameters:
+        - in: path
+          name: note-id
+          schema:
+            type: string
+          required: true
+          description: Id of the note to get.
+      operationId: getNote
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Note"
+    delete:
+      tags:
+        - Notes
+      summary: Soft-delete note from store.
+      parameters:
+        - in: path
+          name: note-id
+          schema:
+            type: string
+          required: true
+          description: Id of the note to get.
+      description: Changes the value of `is_deleted` to `true`.
+      responses:
+        "200":
+          description: "sucessful operation"
