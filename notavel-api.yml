@@ -1,7 +1,7 @@
 openapi: "3.0.2"
 info:
   title: Notável app REST API
-  version: "0.1"
+  version: "1.0.0"
 servers:
   - url: https://api.server.test/v1
 
@@ -47,6 +47,8 @@ components:
             due_at:
               type: string
               format: date-time
+            completed:
+              type: boolean
     Note:
       type: object
       properties:
@@ -79,6 +81,99 @@ components:
             discriminator:
               propertyName: type
 paths:
+  /tasks:
+    get:
+      tags:
+        - Tasks
+      summary: Get all tasks
+      parameters:
+        - in: query
+          name: project_id
+          schema:
+            type: string
+          description: Id of project
+        - in: query
+          name: user_id
+          schema:
+            type: string
+          description: Id of user
+        - in: query
+          name: project_id
+          schema:
+            type: string
+          description: Id of project
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Task"
+    post:
+      tags:
+        - Tasks
+      summary: Create new task
+      operationId: createTask
+      requestBody:
+        description: Task object to create.
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Task"
+        required: true
+      responses:
+        "201":
+          description: "successful operation"
+
+    put:
+      tags:
+        - Tasks
+      summary: Update new task
+      operationId: updateTask
+      requestBody:
+        description: Task object to update.
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Task"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Task"
+
+  /tasks/{task-id}:
+    parameters:
+      - in: path
+        name: task-id
+        schema:
+          type: string
+        description: Id of task
+        required: true
+    get:
+      tags:
+        - Tasks
+      summary: Get task by id
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Task"
+    delete:
+      tags:
+        - Tasks
+      summary: Delete single task by id
+      description: Changes the value of `is_deleted` to `true`
+      responses:
+        "200":
+          description: OK
   /projects:
     get:
       tags:
@@ -100,12 +195,70 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/Project"
-
     post:
       tags:
         - Projects
       summary: Create new project
-      description:
+      operationId: createProjects
+      requestBody:
+        description: Note object to create.
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Project"
+        required: true
+      responses:
+        "201":
+          description: "successful operation"
+    put:
+      tags:
+        - Projects
+      summary: Update existing project
+      operationId: updateProject
+      requestBody:
+        description: Project object to be updated.
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Project"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Project"
+  /projects/{project-id}:
+    get:
+      tags:
+        - Projects
+      summary: Get project by id
+      parameters:
+        - in: path
+          name: project-id
+          schema:
+            type: string
+          description: Id of project
+          required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Project"
+    delete:
+      tags:
+        - Projects
+      summary: Delete selected project
+      parameters:
+        - in: path
+          name: project-id
+          schema:
+            type: string
+          description: Id of project
+      description: Changes the value of `is_deleted` to `true`
       responses:
         "200":
           description: OK
@@ -122,10 +275,10 @@ paths:
           application/json:
             schema:
               $ref: "#/components/schemas/Note"
+        required: true
       responses:
         "201":
           description: "successful operation"
-
     put:
       tags:
         - Notes
