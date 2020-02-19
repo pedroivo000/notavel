@@ -3,7 +3,7 @@ info:
   title: Notável app REST API
   version: "1.0.0"
 servers:
-  - url: https://api.server.test/v1
+  - url: https://api.server.test/api/v1
 
 components:
   schemas:
@@ -86,6 +86,7 @@ paths:
       tags:
         - Tasks
       summary: Get all tasks
+      operationId: tasks.get_all_tasks
       parameters:
         - in: query
           name: project_id
@@ -97,11 +98,6 @@ paths:
           schema:
             type: string
           description: Id of user
-        - in: query
-          name: project_id
-          schema:
-            type: string
-          description: Id of project
       responses:
         "200":
           description: OK
@@ -258,6 +254,7 @@ paths:
           schema:
             type: string
           description: Id of project
+          required: true
       description: Changes the value of `is_deleted` to `true`
       responses:
         "200":
@@ -268,7 +265,7 @@ paths:
       tags:
         - Notes
       summary: Create new note
-      operationId: createNote
+      operationId: create
       requestBody:
         description: Note object to create.
         content:
@@ -283,7 +280,7 @@ paths:
       tags:
         - Notes
       summary: Update existing note
-      operationId: updateNote
+      operationId: update
       requestBody:
         description: Note object to be updated.
         content:
@@ -302,6 +299,7 @@ paths:
       tags:
         - Notes
       summary: Get all notes using query parameters.
+      operationId: get_all_notes
       parameters:
         - in: query
           name: user
