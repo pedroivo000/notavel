@@ -8,7 +8,7 @@ WORKDIR /app
 RUN pip install -r requirements.txt
 
 COPY . /app
-
+EXPOSE 5000
 ENTRYPOINT [ "python" ]
 
-CMD [ "notavel/app.py" ]
+CMD [ "app.py" ]
