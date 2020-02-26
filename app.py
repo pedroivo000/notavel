@@ -6,7 +6,7 @@ app = connexion.App(__name__, specification_dir="./openapi")
 app.add_api("notavel-api.yml")
 
 app.app.config["MONGODB_SETTINGS"] = {"host": os.environ["DB"]}
-initialize_db(app)
+# initialize_db(app)
 
 
 @app.route("/")
@@ -15,4 +15,5 @@ def home():
 
 
 if __name__ == "__main__":
+    initialize_db(app.app)
     app.run(host="0.0.0.0", port=5000, debug=True)

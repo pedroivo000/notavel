@@ -1,14 +1,17 @@
-from flask import request
+from flask import request, Response
 from database.models import Note
+import json
 
 
-def get_notes(**kwargs):
-    pass
+def get_notes(project_id=None, user_id=None):
+    notes = Note.objects().to_json()
+
+    return Response(notes, mimetype="application/json", status=200)
 
 
-def create_note(**kwargs):
+def create_note():
     body = request.get_json()
-    note = Note(**kwargs).save()
+    note = Note(**body).save()
     id = note.id
     return {"id": str(id)}, 200
 
