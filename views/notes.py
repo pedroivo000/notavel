@@ -1,12 +1,17 @@
-from flask import request, Response
-from database.models import Note
-import json
+from flask import request
+from database.models import Note, NoteSchema
+
+note_schema = NoteSchema()
+notes_schema = NoteSchema(many=True)
 
 
 def get_notes(project_id=None, user_id=None):
-    notes = Note.objects().to_json()
-
-    return Response(notes, mimetype="application/json", status=200)
+    # notes = Note.objects().to_json()
+    notes = Note.objects()
+    # notes_schema = NoteSchema(many=True)
+    # print(note_schema.dump(notes))
+    # return note_schema.dump(notes)
+    return notes_schema.dump(notes), 200
 
 
 def create_note():
@@ -21,7 +26,9 @@ def update_note(**kwargs):
 
 
 def get_note(note_id):
-    pass
+    note = Note.objects.get(id=note_id)
+
+    return note_schema.dump(note), 200
 
 
 def delete_note(note_id):
