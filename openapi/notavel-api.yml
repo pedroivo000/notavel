@@ -25,6 +25,8 @@ components:
       properties:
         id:
           type: string
+        parent_note_id:
+          type: string
         type:
           type: string
         user_id:
@@ -81,6 +83,104 @@ components:
             discriminator:
               propertyName: type
 paths:
+  /bullet-points:
+    get:
+      tags:
+        - Bullet Points
+      summary: Get all bullet points.
+      operationId: views.bullet_points.get_bullets
+      parameters:
+        - in: query
+          name: note_id
+          schema:
+            type: string
+          description: Id of note
+        - in: query
+          name: type
+          schema:
+            type: string
+            enum:
+              - bullet
+              - task
+              - idea
+          description: Bullet point type
+        - in: query
+          name: project_id
+          schema:
+            type: string
+          description: Project id
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/BulletPoint"
+    post:
+      tags:
+        - Bullet Points
+      summary: Create new bullet point
+      operationId: views.bullet_points.create_bullet
+      requestBody:
+        description: BulletPoint object to create
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BulletPoint"
+        required: true
+      responses:
+        "201":
+          description: OK
+    put:
+      tags:
+        - Bullet Points
+      summary: Update bullet point
+      operationId: views.bullet_points.update_bullet
+      requestBody:
+        description: BulletPoint object to update
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BulletPoint"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BulletPoint"
+  /bullet-points/{bullet-point-id}:
+    parameters:
+      - in: path
+        name: bullet-point-id
+        schema:
+          type: string
+        description: Id bullet point
+        required: true
+    get:
+      tags:
+        - Bullet Points
+      summary: Get bullet point by id
+      operationId: views.bullet_points.get_bullet
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BulletPoint"
+    delete:
+      tags:
+        - Bullet Points
+      summary: Delete single bullet point by id
+      operationId: views.bullet_points.delete_bullet
+      description: Changes the value of `is_deleted` to `true`
+      responses:
+        "200":
+          description: OK
   /tasks:
     get:
       tags:
