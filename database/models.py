@@ -44,3 +44,5 @@ class NoteSchema(ma.ModelSchema):
     class Meta:
         model = Note
 
+    content = ma.fields.List(ma.fields.Nested(BulletPointSchema))
+
