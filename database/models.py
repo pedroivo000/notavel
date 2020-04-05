@@ -14,7 +14,7 @@ class BaseDocument(db.Document):
 
 
 class BulletPoint(BaseDocument):
-    parent_note_id = db.ReferenceField("Note")
+    parent_note_id = db.ListField(db.ReferenceField("Note"))
     content = db.StringField()
     type = db.StringField()
 
@@ -39,10 +39,13 @@ class BulletPointSchema(ma.ModelSchema):
     class Meta:
         model = BulletPoint
 
+    parent_note_id = ma.fields.List(
+        ma.fields.Nested(lambda: NoteSchema(only=("id", "title", "project")))
+    )
+
 
 class NoteSchema(ma.ModelSchema):
     class Meta:
         model = Note
 
     content = ma.fields.List(ma.fields.Nested(BulletPointSchema))
-
