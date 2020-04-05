@@ -14,19 +14,23 @@ def get_bullets(note_id=None, type=None, project_id=None):
 def create_bullet():
     body = request.get_json()
     bullet = BulletPoint(**body).save()
-    note = bullet.parent_note_id
-    Note.objects(id=body["parent_note_id"]).update_one(push__content=bullet)
+
+    for note_id in body["parent_note_id"]:
+        print(note_id)
+        Note.objects(id=note_id).update_one(push__content=bullet)
 
     id = bullet.id
 
     return {"id": str(id)}, 200
 
 
-def get_bullet(bullet_id):
-    pass
+def get_bullet(bullet_point_id):
+    bullet = BulletPoint.objects.get(id=bullet_point_id)
+
+    return bullet_schema.dump(bullet), 200
 
 
-def delete_bullet(bullet_id):
+def delete_bullet(bullet_point_id):
     pass
 
 
