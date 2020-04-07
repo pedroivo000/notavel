@@ -1,8 +1,12 @@
 black==19.10b0
 connexion==2.6.0
-flask-mongoengine==0.9.5
+flask-sqlalchemy==2.4.1
+flask-wtf==0.14.3
 marshmallow==3.5.0
-git+https://github.com/tschaume/marshmallow-mongoengine@mpcontribs#egg=marshmallow_mongoengine-0.30.0
 pip-chill==0.1.8
-pylint==2.4.4
+psycopg2-binary==2.8.5
+pylint-django==2.0.14
+pylint-mongoengine==0.4.0
+pymongo==3.10.1
+pytest==5.3.5
 swagger-ui-bundle==0.0.6
