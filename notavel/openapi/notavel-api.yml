@@ -4,7 +4,6 @@ info:
   version: "1.0.0"
 servers:
   - url: https://api.server.test/api/v1
-
 components:
   schemas:
     Project:
@@ -20,8 +19,6 @@ components:
           type: string
     BulletPoint:
       type: object
-      required:
-        - type
       properties:
         id:
           type: string
@@ -45,8 +42,6 @@ components:
       allOf:
         - $ref: "#/components/schemas/BulletPoint"
         - type: object
-          required:
-            - type
           properties:
             due_at:
               type: string
@@ -85,12 +80,95 @@ components:
             discriminator:
               propertyName: type
 paths:
-  /bullet-points:
+  /tasks:
+    get:
+      tags:
+        - Tasks
+      summary: Get all tasks
+      parameters:
+        - in: query
+          name: project_id
+          schema:
+            type: string
+          description: Id of project
+        - in: query
+          name: user_id
+          schema:
+            type: string
+          description: Id of user
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Task"
+    post:
+      tags:
+        - Tasks
+      summary: Create new task
+      requestBody:
+        description: Task object to create.
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Task"
+        required: true
+      responses:
+        "201":
+          description: "successful operation"
+    put:
+      tags:
+        - Tasks
+      summary: Update new task
+      requestBody:
+        description: Task object to update.
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Task"
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Task"
+  /tasks/{task_id}:
+    parameters:
+      - in: path
+        name: task_id
+        schema:
+          type: string
+        description: Id of task
+        required: true
+    get:
+      tags:
+        - Tasks
+      summary: Get task by id
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Task"
+    delete:
+      tags:
+        - Tasks
+      summary: Delete single task by id
+      description: Changes the value of `is_deleted` to `true`
+      responses:
+        "200":
+          description: OK
+  /bullet_points:
     get:
       tags:
         - Bullet Points
       summary: Get all bullet points.
-      operationId: views.bullet_points.get_bullets
       parameters:
         - in: query
           name: note_id
@@ -124,7 +202,6 @@ paths:
       tags:
         - Bullet Points
       summary: Create new bullet point
-      operationId: views.bullet_points.create_bullet
       requestBody:
         description: BulletPoint object to create
         content:
@@ -139,7 +216,6 @@ paths:
       tags:
         - Bullet Points
       summary: Update bullet point
-      operationId: views.bullet_points.update_bullet
       requestBody:
         description: BulletPoint object to update
         content:
@@ -154,10 +230,10 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/BulletPoint"
-  /bullet-points/{bullet-point-id}:
+  /bullet_points/{bullet_point_id}:
     parameters:
       - in: path
-        name: bullet-point-id
+        name: bullet_point_id
         schema:
           type: string
         description: Id bullet point
@@ -166,7 +242,6 @@ paths:
       tags:
         - Bullet Points
       summary: Get bullet point by id
-      operationId: views.bullet_points.get_bullet
       responses:
         "200":
           description: OK
@@ -178,98 +253,6 @@ paths:
       tags:
         - Bullet Points
       summary: Delete single bullet point by id
-      operationId: views.bullet_points.delete_bullet
-      description: Changes the value of `is_deleted` to `true`
-      responses:
-        "200":
-          description: OK
-  /tasks:
-    get:
-      tags:
-        - Tasks
-      summary: Get all tasks
-      operationId: views.tasks.get_tasks
-      parameters:
-        - in: query
-          name: project_id
-          schema:
-            type: string
-          description: Id of project
-        - in: query
-          name: user_id
-          schema:
-            type: string
-          description: Id of user
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/Task"
-    post:
-      tags:
-        - Tasks
-      summary: Create new task
-      operationId: views.tasks.create_task
-      requestBody:
-        description: Task object to create.
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/Task"
-        required: true
-      responses:
-        "201":
-          description: "successful operation"
-
-    put:
-      tags:
-        - Tasks
-      summary: Update new task
-      operationId: views.tasks.update_task
-      requestBody:
-        description: Task object to update.
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/Task"
-        required: true
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Task"
-
-  /tasks/{task-id}:
-    parameters:
-      - in: path
-        name: task-id
-        schema:
-          type: string
-        description: Id of task
-        required: true
-    get:
-      tags:
-        - Tasks
-      summary: Get task by id
-      operationId: views.tasks.get_task
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Task"
-    delete:
-      tags:
-        - Tasks
-      summary: Delete single task by id
-      operationId: views.tasks.delete_task
       description: Changes the value of `is_deleted` to `true`
       responses:
         "200":
@@ -285,7 +268,6 @@ paths:
           schema:
             type: string
             description: Id of user.
-      operationId: views.projects.get_projects
       responses:
         "200":
           description: OK
@@ -299,7 +281,6 @@ paths:
       tags:
         - Projects
       summary: Create new project
-      operationId: views.projects.create_project
       requestBody:
         description: Note object to create.
         content:
@@ -314,7 +295,6 @@ paths:
       tags:
         - Projects
       summary: Update existing project
-      operationId: views.projects.update_project
       requestBody:
         description: Project object to be updated.
         content:
@@ -329,15 +309,14 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Project"
-  /projects/{project-id}:
+  /projects/{project_id}:
     get:
       tags:
         - Projects
       summary: Get project by id
-      operationId: views.projects.get_project
       parameters:
         - in: path
-          name: project-id
+          name: project_id
           schema:
             type: string
           description: Id of project
@@ -353,10 +332,9 @@ paths:
       tags:
         - Projects
       summary: Delete selected project
-      operationId: views.projects.delete_project
       parameters:
         - in: path
-          name: project-id
+          name: project_id
           schema:
             type: string
           description: Id of project
@@ -365,13 +343,11 @@ paths:
       responses:
         "200":
           description: OK
-
   /notes:
     post:
       tags:
         - Notes
       summary: Create new note
-      operationId: views.notes.create_note
       requestBody:
         description: Note object to create.
         content:
@@ -386,7 +362,6 @@ paths:
       tags:
         - Notes
       summary: Update existing note
-      operationId: views.notes.update_note
       requestBody:
         description: Note object to be updated.
         content:
@@ -405,7 +380,6 @@ paths:
       tags:
         - Notes
       summary: Get all notes using query parameters.
-      operationId: views.notes.get_notes
       parameters:
         - in: query
           name: user
@@ -423,16 +397,17 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Note"
-  /notes/{note-id}:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Note"
+  /notes/{note_id}:
     get:
       tags:
         - Notes
       summary: Get note by id
-      operationId: views.notes.get_note
       parameters:
         - in: path
-          name: note-id
+          name: note_id
           schema:
             type: string
           required: true
@@ -448,10 +423,9 @@ paths:
       tags:
         - Notes
       summary: Soft-delete note from store.
-      operationId: views.notes.delete_note
       parameters:
         - in: path
-          name: note-id
+          name: note_id
           schema:
             type: string
           required: true
