@@ -140,4 +140,4 @@ dmypy.json
 #Postgress stuff
 
 #Flask app configurations
-*.env
+*.envflask.env
