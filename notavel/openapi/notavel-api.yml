@@ -119,24 +119,6 @@ paths:
       responses:
         "201":
           description: "successful operation"
-    put:
-      tags:
-        - Tasks
-      summary: Update new task
-      requestBody:
-        description: Task object to update.
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/Task"
-        required: true
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Task"
   /tasks/{task_id}:
     parameters:
       - in: path
@@ -149,6 +131,24 @@ paths:
       tags:
         - Tasks
       summary: Get task by id
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Task"
+    put:
+      tags:
+        - Tasks
+      summary: Update new task
+      requestBody:
+        description: Task object to update.
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Task"
+        required: true
       responses:
         "200":
           description: OK
@@ -212,24 +212,6 @@ paths:
       responses:
         "201":
           description: OK
-    put:
-      tags:
-        - Bullet Points
-      summary: Update bullet point
-      requestBody:
-        description: BulletPoint object to update
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/BulletPoint"
-        required: true
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/BulletPoint"
   /bullet_points/{bullet_point_id}:
     parameters:
       - in: path
@@ -242,6 +224,24 @@ paths:
       tags:
         - Bullet Points
       summary: Get bullet point by id
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BulletPoint"
+    put:
+      tags:
+        - Bullet Points
+      summary: Update bullet point
+      requestBody:
+        description: BulletPoint object to update
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BulletPoint"
+        required: true
       responses:
         "200":
           description: OK
@@ -291,24 +291,6 @@ paths:
       responses:
         "201":
           description: "successful operation"
-    put:
-      tags:
-        - Projects
-      summary: Update existing project
-      requestBody:
-        description: Project object to be updated.
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/Project"
-        required: true
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Project"
   /projects/{project_id}:
     get:
       tags:
@@ -321,6 +303,24 @@ paths:
             type: string
           description: Id of project
           required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Project"
+    put:
+      tags:
+        - Projects
+      summary: Update existing project
+      requestBody:
+        description: Project object to be updated.
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Project"
+        required: true
       responses:
         "200":
           description: OK
@@ -358,24 +358,6 @@ paths:
       responses:
         "201":
           description: "successful operation"
-    put:
-      tags:
-        - Notes
-      summary: Update existing note
-      requestBody:
-        description: Note object to be updated.
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/Note"
-        required: true
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Note"
     get:
       tags:
         - Notes
@@ -412,6 +394,24 @@ paths:
             type: string
           required: true
           description: Id of the note to get.
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Note"
+    put:
+      tags:
+        - Notes
+      summary: Update existing note
+      requestBody:
+        description: Note object to be updated.
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Note"
+        required: true
       responses:
         "200":
           description: OK
