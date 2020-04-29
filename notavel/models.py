@@ -2,8 +2,8 @@ from datetime import datetime
 from notavel import db, ma
 
 
-class BulletPoint(db.Model):
-    __tablename__ = "bullet_point"
+class Bullet(db.Model):
+    __tablename__ = "bullet"
     id = db.Column(db.Integer, primary_key=True)
     type = db.Column(db.String(32), index=True)
     content = db.Column(db.String)
@@ -19,16 +19,17 @@ class BulletPoint(db.Model):
         return str(self.__dict__)
 
 
-class BulletPointSchema(ma.ModelSchema):
+class BulletSchema(ma.ModelSchema):
     class Meta:
-        model = BulletPoint
+        model = Bullet
         sqla_session = db.session
 
 
-class Task(BulletPoint):
+class Task(Bullet):
     __tablename__ = "task"
-    id = db.Column(db.Integer, db.ForeignKey("bullet_point.id"), primary_key=True)
+    id = db.Column(db.Integer, db.ForeignKey("bullet.id"), primary_key=True)
     due_at = db.Column(db.DateTime)
+    # priority = db.Column(db.Integer, nullable=True)
     completed = db.Column(db.Boolean, default=False)
     __mapper_args__ = {
         "polymorphic_identity": "task",

@@ -17,7 +17,7 @@ components:
           type: string
         parent_project_id:
           type: string
-    BulletPoint:
+    Bullet:
       type: object
       properties:
         id:
@@ -40,7 +40,7 @@ components:
           format: date-time
     Task:
       allOf:
-        - $ref: "#/components/schemas/BulletPoint"
+        - $ref: "#/components/schemas/Bullet"
         - type: object
           properties:
             due_at:
@@ -75,7 +75,7 @@ components:
           type: array
           items:
             anyOf:
-              - $ref: "#/components/schemas/BulletPoint"
+              - $ref: "#/components/schemas/Bullet"
               - $ref: "#/components/schemas/Task"
             discriminator:
               propertyName: type
@@ -164,7 +164,7 @@ paths:
       responses:
         "200":
           description: OK
-  /bullet_points:
+  /bullets:
     get:
       tags:
         - Bullet Points
@@ -197,7 +197,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/BulletPoint"
+                  $ref: "#/components/schemas/Bullet"
     post:
       tags:
         - Bullet Points
@@ -207,15 +207,15 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/BulletPoint"
+              $ref: "#/components/schemas/Bullet"
         required: true
       responses:
         "201":
           description: OK
-  /bullet_points/{bullet_point_id}:
+  /bullets/{bullet_id}:
     parameters:
       - in: path
-        name: bullet_point_id
+        name: bullet_id
         schema:
           type: string
         description: Id bullet point
@@ -230,7 +230,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/BulletPoint"
+                $ref: "#/components/schemas/Bullet"
     put:
       tags:
         - Bullet Points
@@ -240,7 +240,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/BulletPoint"
+              $ref: "#/components/schemas/Bullet"
         required: true
       responses:
         "200":
@@ -248,7 +248,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/BulletPoint"
+                $ref: "#/components/schemas/Bullet"
     delete:
       tags:
         - Bullet Points
@@ -292,17 +292,17 @@ paths:
         "201":
           description: "successful operation"
   /projects/{project_id}:
+    parameters:
+      - in: path
+        name: project_id
+        schema:
+          type: string
+        description: Id of project
+        required: true
     get:
       tags:
         - Projects
       summary: Get project by id
-      parameters:
-        - in: path
-          name: project_id
-          schema:
-            type: string
-          description: Id of project
-          required: true
       responses:
         "200":
           description: OK
@@ -383,17 +383,17 @@ paths:
                 items:
                   $ref: "#/components/schemas/Note"
   /notes/{note_id}:
+    parameters:
+      - in: path
+        name: note_id
+        schema:
+          type: string
+        required: true
+        description: Id of the note to get.
     get:
       tags:
         - Notes
       summary: Get note by id
-      parameters:
-        - in: path
-          name: note_id
-          schema:
-            type: string
-          required: true
-          description: Id of the note to get.
       responses:
         "200":
           description: OK

@@ -1,11 +1,11 @@
 from notavel import db
 from flask import request
 from flask.views import MethodView
-from notavel.models import BulletPoint, BulletPointSchema
+from notavel.models import Bullet, BulletSchema
 from notavel.models import Task, TaskSchema
 
-bullet_schema = BulletPointSchema()
-bullets_schema = BulletPointSchema(many=True)
+bullet_schema = BulletSchema()
+bullets_schema = BulletSchema(many=True)
 task_schema = TaskSchema()
 tasks_schema = TaskSchema(many=True)
 
@@ -20,16 +20,16 @@ class BaseView(MethodView):
     def post(self):
         pass
 
-    def put(self):
+    def put(self, id):
         pass
 
-    def delete(self):
+    def delete(self, id):
         pass
 
 
-class Bullet_pointsView(BaseView):
+class BulletsView(BaseView):
     def search(self, **kwargs):
-        bullets = BulletPoint.query.all()
+        bullets = Bullet.query.all()
         return bullets_schema.dump(bullets), 200
 
     def post(self):
