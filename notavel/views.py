@@ -1,63 +1,73 @@
+import re
 from notavel import db
 from flask import request
 from flask.views import MethodView
-from notavel.models import Bullet, BulletSchema
-from notavel.models import Task, TaskSchema
-
-bullet_schema = BulletSchema()
-bullets_schema = BulletSchema(many=True)
-task_schema = TaskSchema()
-tasks_schema = TaskSchema(many=True)
+import notavel.models
 
 
 class BaseView(MethodView):
-    def search(self, **kwargs):
-        return "[{hello}]", 200
+    """Base class for MethodViewResolver views"""
 
-    def get(self, id):
-        pass
+    @property
+    def model_name(self):
+        """Get name of SQLAlchemy model class from child view class name"""
+        return re.sub("sView", "", self.__class__.__name__)
+
+    @property
+    def schema_name(self):
+        """Get name of Marshmallow schema class from child view class name"""
+
+        return self.model_name + "Schema"
+
+    def model(self, **kwargs):
+        """Return instance of respective SQLAlchemy model for View class"""
+        return getattr(notavel.models, self.model_name)(**kwargs)
+
+    def schema(self, **kwargs):
+        return getattr(notavel.models, self.schema_name)(**kwargs)
+
+    def search(self, **kwargs):
+        records = self.model().query.all()
+        return self.schema(many=True).dump(records), 200
+
+    def get(self, **kwargs):
+        # kwargs only contain a single element corresponding to resource id:
+        id = list(kwargs.values())[0]
+        record = self.model().query.get_or_404(id)
+
+        return self.schema().dump(record), 200
 
     def post(self):
-        pass
+        body = request.json
+        new_record = self.schema().load(body, session=db.session)
+        db.session.add(new_record)
+        db.session.commit()
 
-    def put(self, id):
-        pass
+        return self.schema().dump(new_record), 200
+
+    def put(self, **kwargs):
+
+        id = list(kwargs.values())[0]
+        record = self.model().query.get_or_404(id)
+
+        if record:
+            body = request.json
+            updated_record = self.schema().load(body, instance=record, partial=True)
+
+        db.session.commit()
+
+        return self.schema().dump(updated_record), 200
 
     def delete(self, id):
         pass
 
 
 class BulletsView(BaseView):
-    def search(self, **kwargs):
-        bullets = Bullet.query.all()
-        return bullets_schema.dump(bullets), 200
-
-    def post(self):
-        body = request.json
-        new_bullet = bullet_schema.load(body, session=db.session)
-        db.session.add(new_bullet)
-        db.session.commit()
-
-        data = bullet_schema.dump(new_bullet)
-        return data, 200
+    pass
 
 
 class TasksView(BaseView):
-    def search(self, **kwargs):
-        bullets = Task.query.all()
-        return tasks_schema.dump(bullets), 200
-
-    def post(self):
-        body = request.json
-
-        # TODO: figure out why marshamallow returns missing 'id' parameter for .load()
-        new_task = Task(**body)
-
-        db.session.add(new_task)
-        db.session.commit()
-
-        data = task_schema.dump(new_task)
-        return data, 200
+    pass
 
 
 class ProjectsView(BaseView):
@@ -66,7 +76,3 @@ class ProjectsView(BaseView):
 
 class NotesView(BaseView):
     pass
-
-
-def search(**kwargs):
-    return "{hello}", 200
