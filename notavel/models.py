@@ -1,5 +1,7 @@
 from datetime import datetime
+import enum
 from notavel import db, ma
+from marshmallow_enum import EnumField
 
 
 class BaseDocument(db.Model):
@@ -13,33 +15,26 @@ class BaseDocument(db.Model):
         return str(self.__dict__)
 
 
-class BaseBullet(BaseDocument):
-    __abstract__ = True
-    content = db.Column(db.String)
+class BulletTypeEnum(enum.Enum):
+    bullet = "bullet"
+    task = "task"
 
 
-class Bullet(BaseBullet):
+class Bullet(BaseDocument):
     __tablename__ = "bullet"
     id = db.Column(db.Integer, primary_key=True)
-
-
-class Task(BaseBullet):
-    __tablename__ = "task"
-    id = db.Column(db.Integer, primary_key=True)
+    content = db.Column(db.String)
+    type = db.Column(db.Enum(BulletTypeEnum), nullable=False)
     due_at = db.Column(db.DateTime)
     priority = db.Column(db.Integer, nullable=True)
     completed = db.Column(db.Boolean, default=False)
 
 
 class BulletSchema(ma.ModelSchema):
+    type = EnumField(BulletTypeEnum, by_value=True)
+
     class Meta:
         model = Bullet
-        sqla_session = db.session
-
-
-class TaskSchema(ma.ModelSchema):
-    class Meta:
-        model = Task
         sqla_session = db.session
 
 

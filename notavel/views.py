@@ -66,10 +66,6 @@ class BulletsView(BaseView):
     pass
 
 
-class TasksView(BaseView):
-    pass
-
-
 class ProjectsView(BaseView):
     pass
 

@@ -10,7 +10,7 @@ components:
       type: object
       properties:
         id:
-          type: string
+          type: integer
         user_id:
           type: string
         name:
@@ -21,11 +21,11 @@ components:
       type: object
       properties:
         id:
-          type: string
+          type: integer
         parent_notes:
           type: array
           items:
-            type: string
+            type: integer
         type:
           type: string
         user_id:
@@ -38,23 +38,18 @@ components:
         updated_at:
           type: string
           format: date-time
-    Task:
-      allOf:
-        - $ref: "#/components/schemas/Bullet"
-        - type: object
-          properties:
-            due_at:
-              type: string
-              format: date-time
-            completed:
-              type: boolean
+        due_at:
+          type: string
+          format: date-time
+        completed:
+          type: boolean
     Note:
       type: object
       properties:
         id:
-          type: string
+          type: integer
         user_id:
-          type: string
+          type: integer
         title:
           type: string
           example: Creating Notes
@@ -74,96 +69,8 @@ components:
         content:
           type: array
           items:
-            anyOf:
-              - $ref: "#/components/schemas/Bullet"
-              - $ref: "#/components/schemas/Task"
-            discriminator:
-              propertyName: type
+            $ref: "#/components/schemas/Bullet"
 paths:
-  /tasks:
-    get:
-      tags:
-        - Tasks
-      summary: Get all tasks
-      parameters:
-        - in: query
-          name: project_id
-          schema:
-            type: string
-          description: Id of project
-        - in: query
-          name: user_id
-          schema:
-            type: string
-          description: Id of user
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/Task"
-    post:
-      tags:
-        - Tasks
-      summary: Create new task
-      requestBody:
-        description: Task object to create.
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/Task"
-        required: true
-      responses:
-        "201":
-          description: "successful operation"
-  /tasks/{task_id}:
-    parameters:
-      - in: path
-        name: task_id
-        schema:
-          type: string
-        description: Id of task
-        required: true
-    get:
-      tags:
-        - Tasks
-      summary: Get task by id
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Task"
-    put:
-      tags:
-        - Tasks
-      summary: Update new task
-      requestBody:
-        description: Task object to update.
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/Task"
-        required: true
-      responses:
-        "200":
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/Task"
-    delete:
-      tags:
-        - Tasks
-      summary: Delete single task by id
-      description: Changes the value of `is_deleted` to `true`
-      responses:
-        "200":
-          description: OK
   /bullets:
     get:
       tags:
