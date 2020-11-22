@@ -24,12 +24,16 @@ components:
           type: integer
         note_id:
           type: integer
+        parent_id:
+          type: integer
         type:
           type: string
         user_id:
           type: string
         content:
           type: string
+        order:
+          type: integer
         created_at:
           type: string
           format: date-time

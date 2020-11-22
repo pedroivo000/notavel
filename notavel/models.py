@@ -28,10 +28,14 @@ class Bullet(BaseDocument):
     id = db.Column(db.Integer, primary_key=True)
     note_id = db.Column(db.Integer, db.ForeignKey("note.id"), nullable=False)
     content = db.Column(db.String)
+    order = db.Column(db.Integer, nullable=False)
     type = db.Column(db.Enum(BulletTypeEnum), nullable=False)
     due_at = db.Column(db.DateTime)
     priority = db.Column(db.Integer, nullable=True)
     completed = db.Column(db.Boolean, default=False)
+    parent_id = db.Column(db.Integer, db.ForeignKey("bullet.id"))
+
+    # parent = db.relationship("Bullet", remote_side=[id])
 
 
 class BulletSchema(ma.ModelSchema):
@@ -46,7 +50,9 @@ class BulletSchema(ma.ModelSchema):
 class Note(BaseDocument):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String)
-    content = db.relationship("Bullet", backref="note", lazy=True)
+    content = db.relationship(
+        "Bullet", backref="note", lazy=True, order_by="Bullet.order"
+    )
 
 
 class NoteSchema(ma.ModelSchema):
