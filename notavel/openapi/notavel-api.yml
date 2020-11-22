@@ -22,10 +22,8 @@ components:
       properties:
         id:
           type: integer
-        parent_notes:
-          type: array
-          items:
-            type: integer
+        note_id:
+          type: integer
         type:
           type: string
         user_id:
