@@ -13,3 +13,7 @@ class Config:
     SQLALCHEMY_DATABASE_URI = (
         f"{DB_SERVICE}://{DB_USER}:{DB_PASS}@{DB_SERVICE}:{DB_PORT}/{DB_NAME}"
     )
+
+
+class TestConfig(Config):
+    DB_NAME = "testing"
