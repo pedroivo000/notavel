@@ -1,4 +1,5 @@
 import json
+import pytest
 
 
 def test_get_bullets(test_app):
@@ -8,6 +9,16 @@ def test_get_bullets(test_app):
 
     assert response.status_code == 200
     assert len(record) == 4
+
+
+@pytest.mark.parametrize("type,expected", [("bullet", 4), ("task", 0), ("idea", 0)])
+def test_get_bullet_by_type(test_app, type, expected):
+
+    response = test_app.get("/api/v1/bullets", query_string={"type": type})
+    record = response.get_json()
+    print(record)
+    assert response.status_code == 200
+    assert len(record) == expected
 
 
 def test_get_bullet_by_id(test_app):

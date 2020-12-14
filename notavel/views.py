@@ -27,7 +27,7 @@ class BaseView(MethodView):
         return getattr(notavel.models, self.schema_name)(**kwargs)
 
     def search(self, **kwargs):
-        records = self.model().query.all()
+        records = self.model().query.filter_by(**kwargs)
         return self.schema(many=True).dump(records), 200
 
     def get(self, **kwargs):
