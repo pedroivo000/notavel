@@ -63,8 +63,8 @@ components:
           type: string
           format: date-time
         project_id:
-          type: string
-          example: Personal
+          type: integer
+          example: 1
         tags:
           type: array
           items:
