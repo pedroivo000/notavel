@@ -62,6 +62,7 @@ class NoteSchema(ma.ModelSchema):
     class Meta:
         model = Note
         sqla_session = db.session
+        include_fk = True
 
 
 class Project(BaseDocument):
