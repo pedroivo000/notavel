@@ -15,8 +15,12 @@ components:
           type: string
         name:
           type: string
-        parent_project_id:
-          type: string
+        parent_id:
+          type: integer
+        notes:
+          type: array
+          items:
+            $ref: "#/components/schemas/Note"
     Bullet:
       type: object
       properties:
@@ -58,7 +62,7 @@ components:
         created_at:
           type: string
           format: date-time
-        project:
+        project_id:
           type: string
           example: Personal
         tags:

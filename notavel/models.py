@@ -1,9 +1,8 @@
 from datetime import datetime
 import enum
-
-from sqlalchemy.orm import backref
-from notavel import db, ma
 from marshmallow_enum import EnumField
+
+from notavel import db, ma
 
 
 class BaseDocument(db.Model):
@@ -48,11 +47,13 @@ class BulletSchema(ma.ModelSchema):
 
 
 class Note(BaseDocument):
+    __tablename__ = "note"
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String)
     content = db.relationship(
         "Bullet", backref="note", lazy=True, order_by="Bullet.order"
     )
+    project_id = db.Column(db.Integer, db.ForeignKey("project.id"))
 
 
 class NoteSchema(ma.ModelSchema):
@@ -61,3 +62,23 @@ class NoteSchema(ma.ModelSchema):
     class Meta:
         model = Note
         sqla_session = db.session
+
+
+class Project(BaseDocument):
+    __tablename__ = "project"
+
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String)
+    parent_id = db.Column(db.Integer, db.ForeignKey("project.id"))
+    notes = db.relationship(
+        "Note", backref="project", lazy=True, order_by="Note.updated_at"
+    )
+
+
+class ProjectSchema(ma.ModelSchema):
+    notes = ma.Nested(NoteSchema, many=True, exclude=("content",))
+
+    class Meta:
+        model = Project
+        sqla_session = db.session
+        include_fk = True
