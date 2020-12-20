@@ -277,15 +277,15 @@ paths:
       summary: Get all notes using query parameters.
       parameters:
         - in: query
-          name: user
+          name: user_id
           schema:
             type: string
           description: Id of the user.
         - in: query
-          name: project
+          name: project_id
           schema:
             type: string
-          description: Project name to filter by
+          description: Project id to filter by
       responses:
         "200":
           description: OK
