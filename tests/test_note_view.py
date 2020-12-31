@@ -17,6 +17,7 @@ def test_get_note_by_id(test_app):
 
     assert response.status_code == 200
     assert record["title"] == "test1"
+    assert not record["archived"]
     assert len(record["content"]) == 2
     assert record["project_id"] == 1
     assert record["content"][0]["content"] == "test1"
@@ -53,3 +54,25 @@ def test_put_note(test_app):
     assert record["title"] == "new_title"
     assert record["project_id"] == 2
     assert record["updated_at"] is not None
+
+
+def test_archive_note(test_app):
+    payload = {"archived": True}
+
+    response = test_app.put("api/v1/notes/1", json=payload)
+    record = response.get_json()
+
+    assert response.status_code == 200
+    assert record["archived"]
+    assert any(d["archived"] for d in record["content"])
+
+
+def test_unarchive_note(test_app):
+
+    test_app.put("api/v1/notes/1", json={"archived": True})
+    response = test_app.put("api/v1/notes/1", json={"archived": False})
+    record = response.get_json()
+
+    assert response.status_code == 200
+    assert not record["archived"]
+    assert not any(d["archived"] for d in record["content"])

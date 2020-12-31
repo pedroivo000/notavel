@@ -10,7 +10,7 @@ class BaseDocument(db.Model):
 
     created_at = db.Column(db.DateTime, default=datetime.now)
     updated_at = db.Column(db.DateTime, onupdate=datetime.now)
-    is_deleted = db.Column(db.Boolean, default=False)
+    archived = db.Column(db.Boolean, default=False)
 
     def __repr__(self):
         return str(self.__dict__)
@@ -56,6 +56,18 @@ class Note(BaseDocument):
     project_id = db.Column(db.Integer, db.ForeignKey("project.id"))
 
 
+# TODO: find generic way to archive child if parent is archived
+# archive bullets if note is archived
+@db.event.listens_for(Note, "after_update")
+def propgate_note_archive(mapper, connection, target):
+
+    if db.inspect(target).attrs.archived.history.has_changes():
+        stmt = (
+            db.update(Bullet)
+            .values(archived=target.archived)
+            .where(Bullet.note_id == target.id)
+        )
+        connection.execute(stmt)
 class NoteSchema(ma.ModelSchema):
     content = ma.Nested(BulletSchema, many=True)
 
@@ -74,6 +86,17 @@ class Project(BaseDocument):
     notes = db.relationship(
         "Note", backref="project", lazy=True, order_by="Note.updated_at"
     )
+# Archive all notes in a project if project is archived
+@db.event.listens_for(Project, "after_update")
+def propgate_project_archive(mapper, connection, target):
+
+    if db.inspect(target).attrs.archived.history.has_changes():
+        stmt = (
+            db.update(Note)
+            .values(archived=target.archived)
+            .where(Note.project_id == target.id)
+        )
+        connection.execute(stmt)
 
 
 class ProjectSchema(ma.ModelSchema):

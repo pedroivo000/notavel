@@ -15,6 +15,7 @@ def test_get_project_by_id(test_app):
     assert response.status_code == 200
     assert record["id"] == 1
     assert len(record["notes"]) == 2
+    assert not record["archived"]
 
 
 def test_post_project(test_app):
@@ -35,3 +36,14 @@ def test_set_project_parent(test_app):
 
     assert response.status_code == 200
     assert record["parent_id"] == 1
+
+
+def test_archive_project(test_app):
+    payload = {"archived": True}
+
+    response = test_app.put("api/v1/projects/1", json=payload)
+    record = response.get_json()
+
+    assert response.status_code == 200
+    assert record["archived"]
+    assert record["notes"][0]["archived"]
