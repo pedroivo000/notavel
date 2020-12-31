@@ -170,7 +170,7 @@ paths:
       summary: Delete single bullet point by id
       description: Changes the value of `is_deleted` to `true`
       responses:
-        "200":
+        "204":
           description: OK
   /projects:
     get:
@@ -256,7 +256,7 @@ paths:
           required: true
       description: Changes the value of `is_deleted` to `true`
       responses:
-        "200":
+        "204":
           description: OK
   /notes:
     post:
@@ -347,5 +347,5 @@ paths:
           description: Id of the note to get.
       description: Changes the value of `is_deleted` to `true`.
       responses:
-        "200":
+        "204":
           description: "sucessful operation"

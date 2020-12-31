@@ -76,3 +76,24 @@ def test_unarchive_note(test_app):
     assert response.status_code == 200
     assert not record["archived"]
     assert not any(d["archived"] for d in record["content"])
+
+
+def test_delete_note(test_app):
+
+    response = test_app.delete("api/v1/notes/1")
+    assert response.status_code == 204
+
+    get_response = test_app.get("api/v1/notes/1")
+    assert get_response.status_code == 404
+
+    bullets_response = test_app.get("api/v1/bullets", query_string={"note_id": "1"})
+    assert bullets_response.status_code == 200
+    assert bullets_response.get_json() == []
+
+    # check if delete cascade is working correctly:
+    bullets_response = test_app.get("api/v1/bullets", query_string={"note_id": "1"})
+    assert bullets_response.status_code == 200
+    assert bullets_response.get_json() == []
+
+    assert test_app.get("api/v1/bullets/1").status_code == 404
+    assert test_app.get("api/v1/bullets/2").status_code == 404

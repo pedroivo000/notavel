@@ -22,6 +22,7 @@ class BulletTypeEnum(enum.Enum):
     idea = "idea"
 
 
+# TODO: cascade delete of parent bullet
 class Bullet(BaseDocument):
     __tablename__ = "bullet"
     id = db.Column(db.Integer, primary_key=True)
@@ -32,7 +33,7 @@ class Bullet(BaseDocument):
     due_at = db.Column(db.DateTime)
     priority = db.Column(db.Integer, nullable=True)
     completed = db.Column(db.Boolean, default=False)
-    parent_id = db.Column(db.Integer, db.ForeignKey("bullet.id"))
+    parent_id = db.Column(db.Integer, db.ForeignKey("bullet.id", ondelete="SET NULL"))
 
     # parent = db.relationship("Bullet", remote_side=[id])
 
@@ -51,7 +52,11 @@ class Note(BaseDocument):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String)
     content = db.relationship(
-        "Bullet", backref="note", lazy=True, order_by="Bullet.order"
+        "Bullet",
+        backref="note",
+        lazy=True,
+        order_by="Bullet.order",
+        cascade="all, delete, delete-orphan",
     )
     project_id = db.Column(db.Integer, db.ForeignKey("project.id"))
 
@@ -84,8 +89,14 @@ class Project(BaseDocument):
     name = db.Column(db.String)
     parent_id = db.Column(db.Integer, db.ForeignKey("project.id"))
     notes = db.relationship(
-        "Note", backref="project", lazy=True, order_by="Note.updated_at"
+        "Note",
+        backref="project",
+        lazy=True,
+        order_by="Note.updated_at",
+        cascade="all, delete, delete-orphan",
     )
+
+
 # Archive all notes in a project if project is archived
 @db.event.listens_for(Project, "after_update")
 def propgate_project_archive(mapper, connection, target):

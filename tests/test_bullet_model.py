@@ -13,3 +13,11 @@ def test_create_bullet(database, test_note):
     assert Bullet.query.one()
     # assert bullet.content == content
 
+
+def test_delete_bullet(database, test_bullet):
+
+    bullet = Bullet.query.first()
+    database.session.delete(bullet)
+    database.session.commit()
+
+    assert not Bullet.query.first()

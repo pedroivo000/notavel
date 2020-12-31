@@ -64,3 +64,8 @@ def test_put_bullet_parent_id(test_app):
     assert record["parent_id"] == 1
     assert record["order"] == 1
 
+
+def test_delete_bullet(test_app):
+
+    response = test_app.delete("api/v1/bullets/1")
+    assert response.status_code == 204

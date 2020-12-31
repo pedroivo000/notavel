@@ -58,8 +58,15 @@ class BaseView(MethodView):
 
         return self.schema().dump(updated_record), 200
 
-    def delete(self, id):
-        pass
+    def delete(self, **kwargs):
+
+        id = list(kwargs.values())[0]
+        record = self.model().query.get_or_404(id)
+
+        db.session.delete(record)
+        db.session.commit()
+
+        return "", 204
 
 
 class BulletsView(BaseView):

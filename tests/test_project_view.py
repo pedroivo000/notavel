@@ -47,3 +47,16 @@ def test_archive_project(test_app):
     assert response.status_code == 200
     assert record["archived"]
     assert record["notes"][0]["archived"]
+
+
+def test_delete_project(test_app):
+
+    response = test_app.delete("api/v1/projects/1")
+    assert response.status_code == 204
+
+    get_response = test_app.get("api/v1/projects/1")
+    assert get_response.status_code == 404
+
+    notes_response = test_app.get("api/v1/notes", query_string={"project_id": "1"})
+    assert notes_response.status_code == 200
+    assert notes_response.get_json() == []
