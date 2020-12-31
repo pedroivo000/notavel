@@ -26,7 +26,7 @@ class BulletTypeEnum(enum.Enum):
 class Bullet(BaseDocument):
     __tablename__ = "bullet"
     id = db.Column(db.Integer, primary_key=True)
-    note_id = db.Column(db.Integer, db.ForeignKey("note.id"), nullable=False)
+    note_id = db.Column(db.Integer, db.ForeignKey("note.id"))
     content = db.Column(db.String)
     order = db.Column(db.Integer, nullable=False)
     type = db.Column(db.Enum(BulletTypeEnum), nullable=False)
@@ -34,8 +34,17 @@ class Bullet(BaseDocument):
     priority = db.Column(db.Integer, nullable=True)
     completed = db.Column(db.Boolean, default=False)
     parent_id = db.Column(db.Integer, db.ForeignKey("bullet.id", ondelete="SET NULL"))
+    project_id = db.Column(db.Integer, db.ForeignKey("project.id", ondelete="SET NULL"))
 
-    # parent = db.relationship("Bullet", remote_side=[id])
+
+# set project id if bullet has note id before insert:
+@db.event.listens_for(Bullet, "before_insert")
+def set_project_id(mapper, connection, target):
+
+    if target.note_id:
+        note = Note.query.filter_by(id=target.note_id).first()
+        target.project_id = note.project_id
+        # print(note.project_id)
 
 
 class BulletSchema(ma.ModelSchema):
@@ -73,8 +82,10 @@ def propgate_note_archive(mapper, connection, target):
             .where(Bullet.note_id == target.id)
         )
         connection.execute(stmt)
+
+
 class NoteSchema(ma.ModelSchema):
-    content = ma.Nested(BulletSchema, many=True)
+    content = ma.Nested(BulletSchema(many=True))
 
     class Meta:
         model = Note

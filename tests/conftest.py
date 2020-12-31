@@ -44,6 +44,13 @@ def test_data():
                 "priority": 1,
                 "parent_id": 1,
             },
+            {
+                "content": "test task, no note",
+                "order": 1,
+                "type": "task",
+                "priority": 1,
+                "project_id": 1,
+            },
         ],
     }
 
@@ -164,6 +171,16 @@ def test_note(database):
 
 
 @pytest.fixture
+def test_project_with_note(database, test_project, test_note):
+
+    project = notavel.models.Project.query.first()
+    note = notavel.models.Note.query.first()
+
+    project = project.notes.append(note)
+    database.session.commit()
+
+
+@pytest.fixture
 def test_bullet(database, test_note):
     content = "test"
     order = 1
@@ -174,4 +191,13 @@ def test_bullet(database, test_note):
         content=content, order=order, type=type, note_id=note_id
     )
     database.session.add(bullet)
+    database.session.commit()
+
+
+@pytest.fixture
+def test_archived_note(database, test_bullet):
+
+    note = notavel.models.Note.query.first()
+    note.archived = True
+
     database.session.commit()

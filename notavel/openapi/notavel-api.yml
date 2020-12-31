@@ -51,6 +51,8 @@ components:
           format: date-time
         completed:
           type: boolean
+        project_id:
+          type: integer
     Note:
       type: object
       properties:

@@ -8,17 +8,27 @@ def test_get_bullets(test_app):
     record = response.get_json()
 
     assert response.status_code == 200
-    assert len(record) == 4
+    assert len(record) == 5
 
 
-@pytest.mark.parametrize("type,expected", [("bullet", 4), ("task", 0), ("idea", 0)])
+@pytest.mark.parametrize("type,expected", [("bullet", 4), ("task", 1), ("idea", 0)])
 def test_get_bullet_by_type(test_app, type, expected):
 
     response = test_app.get("/api/v1/bullets", query_string={"type": type})
     record = response.get_json()
-    print(record)
     assert response.status_code == 200
     assert len(record) == expected
+
+
+def test_get_project_tasks(test_app):
+
+    response = test_app.get(
+        "ap1/v1/bullets", query_string={"type": "task", "project_id": "1"}
+    )
+    record = response.get_json()
+
+    assert response.status_code == 200
+    assert record == []
 
 
 def test_get_bullet_by_id(test_app):
@@ -39,7 +49,18 @@ def test_post_bullet(test_app):
     record = response.get_json()
 
     assert response.status_code == 200
-    assert record["id"] == 5
+    assert record["id"] == 6
+
+
+def test_create_task_in_project(test_app):
+    payload = {"content": "test", "type": "task", "order": 1, "project_id": 1}
+    response = test_app.post("api/v1/bullets", json=payload)
+    record = response.get_json()
+
+    assert response.status_code == 200
+    assert record["id"] == 6
+    assert record["project_id"] == 1
+    assert not record["note_id"]
 
 
 def test_put_bullet_content(test_app):

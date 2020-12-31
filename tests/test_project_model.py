@@ -1,4 +1,4 @@
-from notavel.models import Project
+from notavel.models import Bullet, Project, Note
 
 
 def test_create_project(database):
@@ -57,4 +57,30 @@ def test_unarchive_project(database):
     database.session.commit()
     assert not project.archived
     assert not note.archived
+
+
+def test_get_project_tasks(database):
+
+    project = Project(name="test project, with task")
+    note = Note(title="test note, with task", project_id=1)
+    task = Bullet(content="test task", note_id=1, order=1, type="task")
+
+    database.session.add_all([project, note, task])
+    database.session.commit()
+
+    obj = database.session.query(Bullet).first()
+    assert obj.project_id == 1
+    # assert database.session.query(Bullet).filter_by(type="task", project_id=1).one()
+
+
+def test_create_project_task(database):
+    project = Project(name="test project, with task")
+    task = Bullet(content="test task", order=1, type="task", project_id=1)
+
+    database.session.add_all([project, task])
+    database.session.commit()
+    obj = database.session.query(Bullet).first()
+
+    assert obj.project_id == 1
+    assert database.session.query(Project).one()
 
