@@ -17,7 +17,7 @@ def create_app(config=Config):
 
     # Get the underlying flask app instance from connex_app:
     app = connex_app.app
-    app.config.from_object(Config)
+    app.config.from_object(config())
 
     # Initialize plugins:
     db.init_app(app)

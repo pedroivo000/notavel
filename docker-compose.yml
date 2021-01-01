@@ -18,6 +18,7 @@ services:
       - flask.env
     volumes:
       - postgres_data:/var/lib/postgresql/data
+      - ./pg-init-scripts:/docker-entrypoint-initdb.d
     ports:
       - 5432:5432
 

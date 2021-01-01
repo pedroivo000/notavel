@@ -1,5 +1,5 @@
 import pytest
-from notavel.config import TestConfig
+from notavel.config import TestingConfig
 from notavel import create_app
 from notavel import db
 import notavel.models
@@ -107,7 +107,7 @@ def test_notes():
 
 @pytest.fixture
 def test_app(test_data):
-    app = create_app(TestConfig)
+    app = create_app(TestingConfig)
 
     # Code from: https://testdriven.io/blog/flask-pytest/
     # Create a test client using the Flask application configured for testing
