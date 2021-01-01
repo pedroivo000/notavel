@@ -48,6 +48,13 @@ def test_archive_project(test_app):
     assert record["archived"]
     assert record["notes"][0]["archived"]
 
+    note_response = test_app.get("api/v1/notes/1")
+    note_record = note_response.get_json()
+
+    assert note_response.status_code == 200
+    # assert if bullets are also archived if project is archived
+    assert any(d["archived"] for d in note_record["content"])
+
 
 def test_delete_project(test_app):
 

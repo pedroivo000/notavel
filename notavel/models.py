@@ -113,12 +113,22 @@ class Project(BaseDocument):
 def propgate_project_archive(mapper, connection, target):
 
     if db.inspect(target).attrs.archived.history.has_changes():
+
         stmt = (
             db.update(Note)
             .values(archived=target.archived)
             .where(Note.project_id == target.id)
         )
         connection.execute(stmt)
+
+        # propagate archive to bullets as well:
+        # TODO: find a more elegant way of propagating archive.
+        stmt2 = (
+            db.update(Bullet)
+            .values(archived=target.archived)
+            .where(Bullet.project_id == target.id)
+        )
+        connection.execute(stmt2)
 
 
 class ProjectSchema(ma.ModelSchema):
