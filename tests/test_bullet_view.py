@@ -23,12 +23,12 @@ def test_get_bullet_by_type(test_app, type, expected):
 def test_get_project_tasks(test_app):
 
     response = test_app.get(
-        "ap1/v1/bullets", query_string={"type": "task", "project_id": "1"}
+        "api/v1/bullets", query_string={"type": "task", "project_id": "1"}
     )
     record = response.get_json()
 
     assert response.status_code == 200
-    assert record == []
+    assert len(record) == 1
 
 
 def test_get_bullet_by_id(test_app):
