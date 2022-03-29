@@ -6,7 +6,7 @@ flask-sqlalchemy==2.4.1
 flask-wtf==0.14.3
 marshmallow-enum==1.5.1
 marshmallow-sqlalchemy==0.22.3
-paramiko==2.7.2
+paramiko==2.10.1
 pip-chill==0.1.8
 psycopg2-binary==2.8.5
 pylint-flask==0.6
